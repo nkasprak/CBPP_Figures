@@ -1,0 +1,62 @@
+div.cbppFigure {
+    max-width:940px;
+    font-family:"proxima-nova", sans-serif;
+}
+
+div.cbppFigure h2.title {
+    margin-top:0.5em;
+}
+
+div.cbppFigure div.borderWrapper {
+    border-top:1px solid #888;
+    border-bottom:1px solid #888;
+}
+
+div.cbppFigure h3.subtitle {
+    font-family:"proxima-nova-condensed", sans-serif;
+    font-weight:300;
+}
+
+div.cbppFigure div.contentWrap {
+    width:100%;
+    position:relative;
+}
+
+div.cbppFigure div.contentWrap div.content,
+div.cbppFigure div.contentWrap div.grid .fixedCell{
+    position:absolute;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+}
+
+div.cbppFigure div.contentWrap div.grid{
+    display:inline-block;
+    padding:0;
+    margin:0;
+}
+
+div.cbppFigure div.notes {
+    font-size:0.8em;
+    color:#888;
+    line-height:110%;
+}
+
+div.cbppFigure div.credit {
+    text-transform:uppercase;
+    color:#888;
+    text-align:right;
+    margin-top:0.4em;
+    font-size:0.9em;
+}
+
+div.cbppFigure div.credit a {
+    color:#888;
+    text-decoration:none;
+}
+
+
+div.cbppFigure div.credit a:hover {
+    text-decoration:underline;
+}
