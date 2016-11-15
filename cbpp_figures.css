@@ -23,36 +23,33 @@ div.cbppFigure h3.subtitle {
     color:#000;
 }
 
-div.cbppFigure div.contentWrap {
+div.cbppFigure div.content {
     width:100% !important;
     position:relative;
 }
 
-div.cbppFigure div.contentWrap div.content,
-div.cbppFigure div.contentWrap div.grid .fixedCell{
-    position:absolute;
-    left:0;
-    top:0;
-    right:0;
-    bottom:0;
-}
-
-div.cbppFigure div.contentWrap div.grid{
-    display:inline-block;
-    vertical-align:top;
+div.cbppFigure div.content div.cellWrap {
+    display:block;
+    float:left !important;
     padding:0;
     margin:0;
+    position:relative;
+}
+
+div.cbppFigure div.content div.cellWrap.fixed div.grid {
+    position:absolute;
+    top:0;left:0;bottom:0;right:0;
 }
 
 
-div.cbppFigure div.contentWrap div.grid .gridBox {
+div.cbppFigure div.content div.grid .gridBox {
     width:100%;
     height:100%;
     text-align:center;
     border:2px solid #000;
 }
 
-div.cbppFigure div.contentWrap div.grid .gridBox .gridLabel {
+div.cbppFigure div.content div.grid .gridBox .gridLabel {
     vertical-align:middle;
 }
 
@@ -60,6 +57,8 @@ div.cbppFigure div.notes {
     font-size:0.8em;
     color:#888;
     line-height:110%;
+    clear:both;
+    padding-top:0.5em;
 }
 
 div.cbppFigure div.credit {
