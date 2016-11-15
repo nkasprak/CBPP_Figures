@@ -34,20 +34,14 @@
     CBPP.Figures.load = function(callback) {
         CBPP.Figures.urlBase = CBPP.urlBase + "CBPP_Figures/v" + CBPP.Figures.version + "/";
         var thisFigureLoaded = false;
-        var urlBase = CBPP.Figures.urlBase, cssLoaded = false, typekitLoaded = false;
-        var l = document.createElement("link");
-        l.type="text/css";
-        l.rel="stylesheet";
-        l.href =  urlBase + 'cbpp_figures.css';
+        var CBPP_URL_ROOT = CBPP.Figures.urlBase, cssLoaded = false, typekitLoaded = false;
         function loadCSS() {
             if (!cssLoaded) {
                 cssLoaded = true;
                 ready();
             }
         }
-        l.onload = loadCSS;
-        l.load = loadCSS;
-        document.getElementsByTagName('head')[0].appendChild(l);
+        CBPP.CSS(CBPP_URL_ROOT + "cbpp_figures.css", loadCSS);
         function ready() {
             if (cssLoaded && !thisFigureLoaded && typekitLoaded) {
                 CBPP.Figures.ready = true;
