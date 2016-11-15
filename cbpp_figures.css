@@ -5,6 +5,10 @@ div.cbppFigure {
 
 div.cbppFigure h2.title {
     margin-top:0.5em;
+    line-height:24px;
+    font-size:24px;
+    font-family:"proxima-nova", sans-serif;
+    color:#000;
 }
 
 div.cbppFigure div.borderWrapper {
@@ -14,11 +18,13 @@ div.cbppFigure div.borderWrapper {
 
 div.cbppFigure h3.subtitle {
     font-family:"proxima-nova-condensed", sans-serif;
+    font-size:19px;
     font-weight:300;
+    color:#000;
 }
 
 div.cbppFigure div.contentWrap {
-    width:100%;
+    width:100% !important;
     position:relative;
 }
 
@@ -33,8 +39,21 @@ div.cbppFigure div.contentWrap div.grid .fixedCell{
 
 div.cbppFigure div.contentWrap div.grid{
     display:inline-block;
+    vertical-align:top;
     padding:0;
     margin:0;
+}
+
+
+div.cbppFigure div.contentWrap div.grid .gridBox {
+    width:100%;
+    height:100%;
+    text-align:center;
+    border:2px solid #000;
+}
+
+div.cbppFigure div.contentWrap div.grid .gridBox .gridLabel {
+    vertical-align:middle;
 }
 
 div.cbppFigure div.notes {
@@ -51,12 +70,17 @@ div.cbppFigure div.credit {
     font-size:0.9em;
 }
 
-div.cbppFigure div.credit a {
+div.cbppFigure a {
     color:#888;
     text-decoration:none;
 }
 
+div.cbppFigure div.notes a {
+    color:#0081a4;
+}
 
-div.cbppFigure div.credit a:hover {
+
+div.cbppFigure div.credit a:hover,
+div.cbppFigure div.notes a:hover {
     text-decoration:underline;
 }

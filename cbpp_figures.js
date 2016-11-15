@@ -9,10 +9,10 @@
     CBPP.Figures.ready = false;
 
     /*load dependencies*/    
-    CBPP.Figures.load = function(callback, typekitCallback) {
+    CBPP.Figures.load = function(callback) {
         CBPP.Figures.urlBase = CBPP.urlBase + "CBPP_Figures/v" + CBPP.Figures.version + "/";
         var thisFigureLoaded = false;
-        var urlBase = CBPP.Figures.urlBase, cssLoaded = false;
+        var urlBase = CBPP.Figures.urlBase, cssLoaded = false, typekitLoaded = false;
         var l = document.createElement("link");
         l.type="text/css";
         l.rel="stylesheet";
@@ -27,7 +27,7 @@
         l.load = loadCSS;
         document.getElementsByTagName('head')[0].appendChild(l);
         function ready() {
-            if (cssLoaded && !thisFigureLoaded) {
+            if (cssLoaded && !thisFigureLoaded && typekitLoaded) {
                 CBPP.Figures.ready = true;
                 callback();
                 thisFigureLoaded = true;
@@ -37,24 +37,27 @@
             CBPP.TypekitRequested = true;   
             $.getScript("//use.typekit.net/qcf4pql.js", function() {
                 try{Typekit.load({
-                    active: function() {
-                        if (typeof(typekitCallback)==="function") {
-                            typekitCallback();
-                        }
-                    }
+                    active: function() {typekitLoaded = true; clearTimeout(tkb); ready();}
                 });}catch(e){} 
             });
         }
         /*fallback in case browser doesn't support CSS onload*/
         setTimeout(loadCSS,1000);
+
+        /*fallback in case Typekit fails*/
+        var tkb = setTimeout(function() {
+            console.log("typekit error");
+            typekitLoaded = true;
+            ready();
+        },800);
     };
     
-    CBPP.Figures.Figure = function(id, config) {
+    CBPP.Figures.Figure = function(selector, config) {
         if (CBPP.Figures.ready === false) {
             console.error("Error: CBPP Figures library not loaded yet.");
             return false;
         }     
-        this.id = id;
+        this.selector = selector;
         this.applyConfig(config);
         this.build();
     };
@@ -66,7 +69,9 @@
     	contentAspectRatio : 0.5625,
         layout: "fixed",
         columns: [1],
-        rows: [1]
+        rows: [1],
+        cssImportant: true,
+        collapseWidth: 0
     };
     CBPP.Figures.Figure.prototype.applyConfig = function(config) {
         var newConfig = {};
@@ -85,7 +90,7 @@
         };
     };
     CBPP.Figures.Figure.prototype.build = function () {
-        var s = $("#" + this.id),
+        var s = $(this.selector),
             title = $("<h2 class=\"title\">"),
             subtitle = $("<h3 class=\"subtitle\">"),
             contentWrap = $("<div class=\"contentWrap\">"),
@@ -93,10 +98,11 @@
             credit = $("<div class=\"credit\">"),
             borderWrap = $("<div class=\"borderWrapper\">"),
             content = $("<div class=\"content\">"),
-            fixedCell;
+            fixedCell,
+            style = "";
         var x,y,gridWidth=0,gridHeight=0,width = this.columns.length, cell,height=this.rows.length;
         if (this.layout==="fixed") {
-            contentWrap.css("padding-bottom",this.contentAspectRatio*100 + "%");
+            style += this.selector + " .contentWrap {padding-bottom:"+this.contentAspectRatio*100 + "%;}";
             for (y = 0; y<height; y++) {
                 gridHeight += this.rows[y];
             }
@@ -106,31 +112,28 @@
             for (y = 0; y<height; y++) {
                 for (x = 0; x<width; x++) {
                     cell = $("<div class=\"grid grid" + x + "" + y + "\">");
-                    cell.css("width",this.columns[x]/gridWidth*100 + "%");
-                    cell.css("height",this.rows[y]/gridHeight*100 + "%");
+                    style += this.selector + " .grid" + x + "" + y + " {width: " + this.columns[x]/gridWidth*100 + "%" + (this.cssImportant? " !important" : "") + ";height: " + this.rows[y]/gridHeight*100 + "%;}";
+                    cell.append("<table class=\"gridBox\"><tr><td class=\"gridLabel\">" + ".grid" + x + "" + y + "</td></tr></table>");
                     content.append(cell);
                 }
             }
+            
         } else if (this.layout==="variable") {
-            contentWrap.css("position","relative");
-            contentWrap.css("height","auto");
-            contentWrap.css("padding-bottom","0");
-            content.css("position","relative");
+            style += this.selector + " .contentWrap {position:relative;height:auto;padding-bottom:0;}";
+            style += this.selector + " .content {position:relative;}";
             for (x = 0; x<width; x++) {
                 gridWidth += this.columns[x];
             }
             for (y = 0; y<height; y++) {
                 for (x = 0; x<width; x++) {
                     cell = $("<div class=\"grid grid" + x + "" + y + "\">");
-                    cell.css("width",this.columns[x]/gridWidth*100 + "%");
+                    style += this.selector + ".grid" + x + "" + y + "{width:" + this.columns[x]/gridWidth*100 + "%" + (this.cssImportant? " !important" : "")+";";
                     if (this.rows[y]!==0) {
-                        cell.css("height",0);
-                        cell.css("position","relative");
-                        cell.css("padding-bottom",this.rows[y]*100 + "%");
+                        style += "height:0;position:relative;padding-bottom:"+this.rows[y]*100 + "%;}";
                         fixedCell = $("<div class='fixedCell'>");
                         cell.append(fixedCell);
                     } else {
-                        cell.css("height","auto");
+                        style += "height:auto;}";
                     }
                     content.append(cell);
                 }
@@ -139,8 +142,12 @@
         title.html(this.title);
         subtitle.html(this.subtitle);
         notes.html(this.notes);
+        if ($(notes).children("p").length === 0) {
+            $(notes).wrapInner("<p></p>");
+        }
         credit.html(this.credit);
         contentWrap.append(content);
+        
         s.empty();
         s.removeClass("cbppFigure");
         s.addClass("cbppFigure");
@@ -150,5 +157,6 @@
         borderWrap.append(notes);
         s.append(borderWrap);
         s.append(credit);
+        $(document).find("head").prepend("<style type='text/css'>" + style + "</style");
     };
 })();
